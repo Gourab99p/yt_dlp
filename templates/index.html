@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Downloader</title>
+</head>
+<body>
+    <h1>YouTube Downloader with Format Selection</h1>
+    <form method="post">
+        <input type="text" name="url" placeholder="Paste YouTube URL" size="60" required>
+        <button type="submit">Fetch Video Info</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+    {% endif %}
+
+    {% if info %}
+        <h2>{{ info.title }}</h2>
+        {% if info.thumbnail %}
+            <img src="{{ info.thumbnail }}" width="320"><br>
+        {% endif %}
+        <p><strong>Duration:</strong> {{ info.duration }} seconds</p>
+
+        {% if download_url %}
+            <p><a href="{{ download_url }}" target="_blank">▶️ Click here to download</a></p>
+        {% else %}
+            <form method="post">
+                <input type="hidden" name="url" value="{{ info.url }}">
+                <label for="format_id">Select format:</label>
+                <select name="format_id" required>
+                    {% for f in formats %}
+                        <option value="{{ f.format_id }}">
+                            {{ f.format_id }} - {{ f.ext }} - {{ f.resolution or f.abr ~ " kbps" }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Get Download Link</button>
+            </form>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
